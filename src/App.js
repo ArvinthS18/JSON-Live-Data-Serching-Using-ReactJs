@@ -4,15 +4,19 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import logo from './loading-25.gif';
 import './12.css';
 import $ from 'jquery';
+import Popup from './Popup';
 class Data extends Component {
 constructor(){
   super()
   this.state = { 
                 Lib: [],
                 empty : 'No Data',
-                load : 'off'     
+                load : 'off',
+                author_detail : [],          
+                check : 0        
                };
   this.ajaxcall= this.ajaxcall.bind(this);
+  this.ajaxcall_1= this.ajaxcall_1.bind(this); 
   }
 
   ajaxcall() {
@@ -41,6 +45,29 @@ constructor(){
         );
      }
   }
+  ajaxcall_1(val) {   
+  
+    let A_N = val.target.innerText;  
+    let u2 = 'https://openlibrary.org/search/authors.json?q=';
+    let URL2 = u2 + A_N;     
+    $.ajax({
+      url: URL2,
+      contentType: "application/json"
+    })
+      .done(
+        function(data) {
+          this.setState({ author_detail : data.docs[0],
+                          check : 1});
+        }.bind(this)
+      )
+      .fail(
+        function(datas) {
+          
+        }.bind(this)
+      );   
+      $("#ca").show();               
+  }
+
    findvalid=(Val)=>{
     const detail = (Val === undefined) ? this.state.empty : Val;
     return detail;
@@ -49,7 +76,7 @@ constructor(){
     const UserData = this.state.Lib.map((author,index) => 
     <tr key={index}>
       <td>{index+1}</td>
-      <td>{author.name}<a href='#author'></a></td>
+     <td onClick={this.ajaxcall_1}>{author.name}</td>
       <td >{author.type}</td>
       <td>{this.findvalid(author.birth_date)}</td>
       <td>{author.work_count}</td>              
@@ -86,6 +113,9 @@ constructor(){
           <tbody>{UserData}</tbody>
           </table>:" "}
       </div >
+      <div>
+        <Popup pr={this.state}/>
+      </div>
       </div>
     );
   }
