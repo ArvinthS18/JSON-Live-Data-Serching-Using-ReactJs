@@ -13,7 +13,9 @@ constructor(){
                 empty : 'No Data',
                 load : 'off',
                 author_detail : [],          
-                check : 0        
+                check : 0 ,
+                work_count : []  ,
+                order : "Asc"       
                };
   this.ajaxcall= this.ajaxcall.bind(this);
   this.ajaxcall_1= this.ajaxcall_1.bind(this); 
@@ -72,6 +74,20 @@ constructor(){
     const detail = (Val === undefined) ? this.state.empty : Val;
     return detail;
   }
+  Sorted_table(col,type){
+    if(col == "name")
+    {
+    if (this.state.order == "Asc"){
+     const arr =  [...this.state.Lib].sort((a, b) => (a[col].toLowerCase() > b[col].toLowerCase() ? -1 : 1) );  
+     this.setState({Lib : arr , order : "Dec"});
+    }
+    else {
+     const arr =  [...this.state.Lib].sort((a, b) => (a[col].toLowerCase() < b[col].toLowerCase() ? -1 : 1) );
+     this.setState({Lib : arr , order : "Asc"});
+    }
+  }
+    
+ }
   render() {
     const UserData = this.state.Lib.map((author,index) => 
     <tr key={index}>
@@ -104,7 +120,7 @@ constructor(){
             <thead>
               <tr>
                 <td>S.No</td>
-                <td>Name</td>
+                <td button onClick={this.Sorted_table("name")}>Name</td>
                 <td>Type</td>
                 <td>DOB</td>
                 <td>Work count</td>            

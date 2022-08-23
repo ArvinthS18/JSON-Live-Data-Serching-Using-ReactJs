@@ -353,9 +353,9 @@ border-radius: 50%;
   cursor: pointer;
   position: fixed;
   top: 40%;
-  left: 30%;
+  left: 20%;
   background-color: rgb(255, 255, 255);
-    background-image: url("122.jpg");
+    background-image: url("1.jpg");
     background-color: #cccccc;
    
 }
@@ -365,14 +365,14 @@ border-radius: 50%;
     padding: 10px;
     border-radius: 50px 20px;
     
-    background: linear-gradient(to right, #888f8a, #f1fdfc);
+    background: linear-gradient(to right, #009636, #009688);
 }
 .card-title {
 margin-top: 20px;
 }
 .card-text {
-font-size: 14px;
-color: rgba(0, 0, 0, 0.6);
+font-size: 18px;
+color: rgba(252, 1, 210, 0.6);
 }
 .card-text .fa {
 font-size: 26px;
