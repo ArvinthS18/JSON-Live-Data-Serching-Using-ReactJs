@@ -15,7 +15,8 @@ constructor(){
                 author_detail : [],          
                 check : 0 ,
                 work_count : []  ,
-                order : "Asc"       
+                order : "Asc",
+               
                };
   this.ajaxcall= this.ajaxcall.bind(this);
   this.ajaxcall_1= this.ajaxcall_1.bind(this); 
@@ -74,20 +75,33 @@ constructor(){
     const detail = (Val === undefined) ? this.state.empty : Val;
     return detail;
   }
-  Sorted_table(col,type){
-    if(col == "name")
-    {
+
+  sorting_table(event, sortKey){
     if (this.state.order == "Asc"){
-     const arr =  [...this.state.Lib].sort((a, b) => (a[col].toLowerCase() > b[col].toLowerCase() ? -1 : 1) );  
-     this.setState({Lib : arr , order : "Dec"});
-    }
-    else {
-     const arr =  [...this.state.Lib].sort((a, b) => (a[col].toLowerCase() < b[col].toLowerCase() ? -1 : 1) );
-     this.setState({Lib : arr , order : "Asc"});
-    }
-  }
-    
- }
+    const data = this.state.Lib;
+    data.sort((a,b) => a[sortKey].toString().localeCompare(b[sortKey].toString()))
+    this.setState({Lib : data, order : "Dec"})
+      }
+    if (this.state.order == "Dec"){
+      const data = this.state.Lib;
+      data.sort((a,b) => b[sortKey].toString().localeCompare(a[sortKey].toString()))
+      this.setState({Lib : data , order : "Asc"});
+     }
+     
+   }
+  sorting_table_int(event, sortKey){
+    if (this.state.order == "Asc"){
+    const data = this.state.Lib;
+    data.sort((a,b) => a[sortKey] - b[sortKey])
+    this.setState({Lib : data, order : "Dec"})
+      }
+    if (this.state.order == "Dec"){
+      const data = this.state.Lib;
+      data.sort((a,b) => b[sortKey] - a[sortKey])
+      this.setState({Lib : data , order : "Asc"});
+     }
+     
+   }
   render() {
     const UserData = this.state.Lib.map((author,index) => 
     <tr key={index}>
@@ -117,15 +131,14 @@ constructor(){
     </div>: " "}
        
     { this.state.Lib.length > 0  ? <table className="table table-hover table-success">          
-            <thead>
-              <tr>
-                <td>S.No</td>
-                <td button onClick={this.Sorted_table("name")}>Name</td>
-                <td>Type</td>
-                <td>DOB</td>
-                <td>Work count</td>            
-              </tr>
-          </thead>
+         
+    <tr>
+          <td>S.No </td>
+          <td >Name <i onClick={e => this.sorting_table(e, "name")} className="fa fa-fw fa-sort"></i></td>
+          <td>Type </td>
+          <td>DOB </td>
+          <td >Work count <i onClick={e => this.sorting_table_int(e, "work_count")} className="fa fa-fw fa-sort" ></i></td>                
+        </tr>       
           <tbody>{UserData}</tbody>
           </table>:" "}
       </div >
