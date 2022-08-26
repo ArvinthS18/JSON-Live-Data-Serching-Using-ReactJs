@@ -5,6 +5,7 @@ import logo from './loading-25.gif';
 import './12.css';
 import $ from 'jquery';
 import Popup from './Popup';
+
 class Data extends Component {
 constructor(){
   super()
@@ -77,30 +78,43 @@ constructor(){
   }
 
   sorting_table(event, sortKey){
-    if (this.state.order == "Asc"){
     const data = this.state.Lib;
-    data.sort((a,b) => a[sortKey].toString().localeCompare(b[sortKey].toString()))
+if(sortKey == "name"){
+    if (this.state.order == "Asc"){    
+    data.sort((a,b) => a[sortKey].localeCompare(b[sortKey]))
     this.setState({Lib : data, order : "Dec"})
       }
-    if (this.state.order == "Dec"){
-      const data = this.state.Lib;
-      data.sort((a,b) => b[sortKey].toString().localeCompare(a[sortKey].toString()))
+    if (this.state.order == "Dec"){     
+      data.sort((a,b) => b[sortKey].localeCompare(a[sortKey]))
       this.setState({Lib : data , order : "Asc"});
      }
      
-   }
-  sorting_table_int(event, sortKey){
-    if (this.state.order == "Asc"){
-    const data = this.state.Lib;
+   }  
+  else if(sortKey == "work_count"){
+
+    if (this.state.order == "Asc"){    
     data.sort((a,b) => a[sortKey] - b[sortKey])
     this.setState({Lib : data, order : "Dec"})
       }
-    if (this.state.order == "Dec"){
-      const data = this.state.Lib;
+    if (this.state.order == "Dec"){      
       data.sort((a,b) => b[sortKey] - a[sortKey])
       this.setState({Lib : data , order : "Asc"});
      }
      
+   }
+  } 
+  tablefilter = val =>{
+    if (val.target.value.length > 0){
+    this.setState({searchInput : val.target.value})
+    console.log(val.target.value);  
+    const temp = this.state.Lib;
+    console.log(temp);
+    const filter = temp.filter(value => value.name.toLowerCase().includes(this.state.searchInput.toLowerCase()));    
+    
+    //console.log(filtered);
+    this.setState({Lib : filter})
+
+    }
    }
   render() {
     const UserData = this.state.Lib.map((author,index) => 
@@ -122,22 +136,28 @@ constructor(){
             <center>
             <input type="text" id="cc"/>
             <button type="button"onClick={this.ajaxcall} className="btn btn-success">Search</button>
+           
         </center> 
+   
         <br />
+             {this.state.Lib.length > 0 ? <div style={{top:"12px",left :"12px"}} className="input-group mb-3"><br/>    
+   <input type="text" placeholder="Search by name " onChange={e => this.tablefilter(e.target.value) }/>
+  </div> : ""}
         {this.state.load == 'on' ? <div id="loading">
         <div class="centerdiv">
             <img src={logo} style={{width:'50px',height:'50px'}}/>
         </div>
-    </div>: " "}
+    </div>
+    : " "}
        
     { this.state.Lib.length > 0  ? <table className="table table-hover table-success">          
          
     <tr>
           <td>S.No </td>
-          <td >Name <i onClick={e => this.sorting_table(e, "name")} className="fa fa-fw fa-sort"></i></td>
+          <td >Name<i onClick={e => this.sorting_table(e, "name")} className="fa fa-fw fa-sort"></i></td>
           <td>Type </td>
           <td>DOB </td>
-          <td >Work count <i onClick={e => this.sorting_table_int(e, "work_count")} className="fa fa-fw fa-sort" ></i></td>                
+          <td >Work count <i onClick={e => this.sorting_table(e, "work_count")} className="fa fa-fw fa-sort" ></i></td>                
         </tr>       
           <tbody>{UserData}</tbody>
           </table>:" "}
