@@ -17,6 +17,8 @@ constructor(){
                 check : 0 ,
                 work_count : []  ,
                 order : "Asc",
+                searchInput : "" ,
+                FilteredTable : [] 
                
                };
   this.ajaxcall= this.ajaxcall.bind(this);
@@ -103,19 +105,33 @@ if(sortKey == "name"){
      
    }
   } 
-  tablefilter = val =>{
-    if (val.target.value.length > 0){
-    this.setState({searchInput : val.target.value})
-    console.log(val.target.value);  
-    const temp = this.state.Lib;
-    console.log(temp);
-    const filter = temp.filter(value => value.name.toLowerCase().includes(this.state.searchInput.toLowerCase()));    
-    
-    //console.log(filtered);
-    this.setState({Lib : filter})
 
-    }
-   }
+  // tablefilter = val =>{
+  //   this.setState({searchInput : val.target.value})
+  //   console.log(val.target.value);  
+  //   let filter = this.state.Lib.filter(value => (value.name).toLowerCase().includes((this.state.searchInput).toLowerCase()));    
+  //   console.log(filter);
+  //   this.setState({FilteredTable : filter})
+  //   }
+
+  tablefilter(val) {
+  this.setState(() => ({searchInput : val.target.value}));
+  console.log(val.target.value,"tablefilter"); 
+  let af = this.state.Lib.filter(value => value.name.toLowerCase().includes(val.target.value.toLowerCase()));   
+  console.log(af,'aaa')
+  this.setState(() => ({FilteredTable : af}))
+  }
+  // console.log(val);  
+  // let str = this.state.searchInput;
+  // let filter = this.state.Lib.filter(value => value.name.toLowerCase().includes(str.toLowerCase()));    
+  // this.setState(() => ({FilteredTable : filter}))
+ // console.log(this.state.Lib,"Lib"); 
+
+//  getvalue(e){
+//  // let v = document.getElementById("xy").value;
+//   console.log(e.target.value);
+//   this.searchByName(e.target.value);
+//  }
   render() {
     const UserData = this.state.Lib.map((author,index) => 
     <tr key={index}>
@@ -131,18 +147,16 @@ if(sortKey == "name"){
         <br></br>
             <h2 class="normal" align="center"><b>JSON Live Data Search using Ajax</b></h2>
             <h3 align="center"><b>Author's Data</b></h3>
+            
             <br></br>
             <div >
             <center>
             <input type="text" id="cc"/>
-            <button type="button"onClick={this.ajaxcall} className="btn btn-success">Search</button>
+            <button type="button" onClick={this.ajaxcall} className="btn btn-success">Search</button>
            
+          
         </center> 
-   
         <br />
-             {this.state.Lib.length > 0 ? <div style={{top:"12px",left :"12px"}} className="input-group mb-3"><br/>    
-   <input type="text" placeholder="Search by name " onChange={e => this.tablefilter(e.target.value) }/>
-  </div> : ""}
         {this.state.load == 'on' ? <div id="loading">
         <div class="centerdiv">
             <img src={logo} style={{width:'50px',height:'50px'}}/>
@@ -154,13 +168,34 @@ if(sortKey == "name"){
          
     <tr>
           <td>S.No </td>
-          <td >Name<i onClick={e => this.sorting_table(e, "name")} className="fa fa-fw fa-sort"></i></td>
+          <td >Name<i onClick={e => this.sorting_table(e, "name")} className="fa fa-fw fa-sort"></i> {this.state.Lib.length > 0 ? <h6 align="center"><div style={{top:"25px",left :"25px"}} className="input-group mb-5"><br/>    
+   <input type="text" id="xwy" placeholder="Enter a name"  onChange={(e) => this.tablefilter(e) }/>
+ 
+  </div> </h6>
+  : ""}</td>
           <td>Type </td>
           <td>DOB </td>
           <td >Work count <i onClick={e => this.sorting_table(e, "work_count")} className="fa fa-fw fa-sort" ></i></td>                
         </tr>       
-          <tbody>{UserData}</tbody>
-          </table>:" "}
+        <tbody>{this.state.searchInput.length > 0 ? this.state.FilteredTable.map((author,index) => 
+    <tr key={index}>
+    <td>{index+1}</td>
+    <td onClick={this.ajaxcall_1}>{author.name}</td>
+    <td>{author.type}</td>
+    <td>{this.findvalid(author.birth_date)}</td>
+    <td >{author.work_count}</td>              
+    </tr>
+          ): this.state.Lib || this.state.FilteredTable.length == 0 ? this.state.Lib.map((author,index) => 
+          <tr key={index}>
+          <td>{index+1}</td>
+          <td onClick={this.ajaxcall_1}>{author.name}</td>
+          <td>{author.type}</td>
+          <td>{this.findvalid(author.birth_date)}</td>
+          <td >{author.work_count}</td>              
+          </tr>
+                ) : " "}
+  </tbody>
+  </table> :" "}
       </div >
       <div>
         <Popup pr={this.state}/>
